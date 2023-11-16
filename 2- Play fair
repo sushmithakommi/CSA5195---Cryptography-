@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <string.h>
+void createKeyMatrix(char key[], char keyMatrix[5][5]) {
+    int keyLen = strlen(key);
+    int k, i, j;
+    int flag = 0;
+    char alphabet[26] = "ABCDEFGHIKLMNOPQRSTUVWXYZ"; 
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+      if (flag < keyLen) {
+        keyMatrix[i][j] = key[flag];
+       flag++;
+     } else {
+     for (k = 0; k < 25; k++) {
+     int letterUsed = 0;
+    for (int x = 0; x < 5; x++) {
+    for (int y = 0; y < 5; y++) {
+  if (keyMatrix[x][y] == alphabet[k]) {
+    letterUsed = 1;
+      }
+      }
+      }
+      if (letterUsed == 0) {
+       keyMatrix[i][j] = alphabet[k];
+       break;
+        }
+      }
+   }
+        }
+    }
+}
+void encryptPair(char keyMatrix[5][5], char a, char b) {
+    int i, j, x1, x2, y1, y2;
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+            if (keyMatrix[i][j] == a) {
+       x1 = i;
+      y1 = j;
+      }
+      if (keyMatrix[i][j] == b) {
+        x2 = i;
+          y2 = j;
+       }
+        }
+    }
+    if (x1 == x2) {
+        printf("%c%c", keyMatrix[x1][(y1 + 1) % 5], keyMatrix[x2][(y2 + 1) % 5]);
+    } else if (y1 == y2) {
+        printf("%c%c", keyMatrix[(x1 + 1) % 5][y1], keyMatrix[(x2 + 1) % 5][y2]);
+    } else {
+        printf("%c%c", keyMatrix[x1][y2], keyMatrix[x2][y1]);
+    }
+}
+int main() {
+    char key[26];
+    char keyMatrix[5][5];
+    char plaintext[100];
+    char ciphertext[100];
+    int i, j;
+    printf("Enter the plaintext: ");
+    scanf("%s", plaintext);
+printf("Enter the key: ");
+    scanf("%s", key);
+    createKeyMatrix(key, keyMatrix);
+    int len = strlen(plaintext);
+    if (len % 2 != 0) {
+        plaintext[len] = 'X';
+        len++;
+    }
+    for (i = 0; i < len; i += 2) {
+        encryptPair(keyMatrix, plaintext[i], plaintext[i + 1]);
+    }
+    return 0;
+}
